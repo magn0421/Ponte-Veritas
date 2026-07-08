@@ -9,8 +9,8 @@ export const hero = {
   ctaPrincipal: { label: "Comencemos una conversación", href: "/agenda" },
   ctaSecundario: { label: "Descubre cómo podemos acompañarte", href: "#razones" },
   imagen:
-    "https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=2400&q=80",
-  imagenAlt: "Lago entre montañas bañado por la luz dorada del atardecer",
+    "https://images.unsplash.com/photo-1762943031946-610b418b7beb?auto=format&fit=crop&w=2400&q=80",
+  imagenAlt: "Puente de piedra sobre un río en calma bajo un cielo dorado al atardecer",
 };
 
 export const identificacion = {
