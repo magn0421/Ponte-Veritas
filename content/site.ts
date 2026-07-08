@@ -24,5 +24,4 @@ export const nav = [
   { label: "Organizaciones", href: "/organizaciones" },
   { label: "Nuestra esencia", href: "/nuestra-esencia" },
   { label: "Recursos", href: "/recursos" },
-  { label: "Pagos", href: "/pagos" },
 ] as const;
