@@ -1,0 +1,244 @@
+@import "tailwindcss";
+
+@theme {
+  /* Tokens de color Ponte Veritas */
+  --color-negro-base: #0a0a0a;
+  --color-negro-suave: #141414;
+  --color-crema: #f5f1e8;
+  --color-blanco-calido: #faf8f3;
+  --color-dorado: #c9a24b;
+  --color-dorado-claro: #ddbc6e;
+  --color-dorado-tenue: #c9a24b33;
+  --color-texto-oscuro: #1c1c1c;
+  --color-texto-claro: #edeae2;
+  --color-texto-gris: #6b675e;
+
+  --radius-card: 12px;
+  --radius-btn: 8px;
+}
+
+@theme inline {
+  --font-serif: var(--font-cormorant), Georgia, serif;
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+}
+
+body {
+  background-color: var(--color-crema);
+  color: var(--color-texto-oscuro);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Foco visible en dorado para navegación por teclado */
+:focus-visible {
+  outline: 2px solid var(--color-dorado);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ---------------------------------------------------------------
+   Animaciones de entrada (AnimateOnScroll)
+   Estados controlados por data-visible; una sola vez por carga.
+   --------------------------------------------------------------- */
+.aos {
+  opacity: 0;
+  transition-property: opacity, transform;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1); /* ease-out */
+  transition-duration: 700ms;
+  will-change: opacity, transform;
+}
+.aos-up {
+  transform: translateY(28px);
+}
+.aos-left {
+  transform: translateX(-36px);
+}
+.aos-right {
+  transform: translateX(36px);
+}
+.aos-scale {
+  transform: scale(0.97);
+}
+.aos[data-visible="true"] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .aos,
+  .aos-up,
+  .aos-left,
+  .aos-right,
+  .aos-scale {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Subrayado dorado que crece desde el centro (enlaces de nav)
+   --------------------------------------------------------------- */
+.nav-link {
+  position: relative;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -4px;
+  height: 1px;
+  background-color: var(--color-dorado);
+  transform: scaleX(0);
+  transform-origin: center;
+  transition: transform 300ms ease-in-out;
+}
+.nav-link:hover::after,
+.nav-link:focus-visible::after {
+  transform: scaleX(1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Header: fallback sin backdrop-filter
+   --------------------------------------------------------------- */
+.header-scrolled {
+  background-color: rgba(10, 10, 10, 0.95);
+}
+@supports (backdrop-filter: blur(8px)) {
+  .header-scrolled {
+    background-color: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(8px);
+  }
+}
+
+/* ---------------------------------------------------------------
+   Zoom cinematográfico extremadamente lento (¿Qué es Ponte Veritas?)
+   --------------------------------------------------------------- */
+@keyframes ken-burns {
+  from {
+    transform: scale(1);
+  }
+  to {
+    transform: scale(1.06);
+  }
+}
+.slow-zoom {
+  animation: ken-burns 28s ease-in-out forwards;
+  animation-play-state: paused; /* arranca cuando la sección entra en viewport */
+  will-change: transform;
+}
+.aos[data-visible="true"] .slow-zoom {
+  animation-play-state: running;
+}
+@media (prefers-reduced-motion: reduce) {
+  .slow-zoom {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Movimiento ambiental casi imperceptible (marca de agua CTA final)
+   --------------------------------------------------------------- */
+@keyframes ambient-drift {
+  0%,
+  100% {
+    transform: translateY(-10px);
+  }
+  50% {
+    transform: translateY(10px);
+  }
+}
+.ambient-drift {
+  animation: ambient-drift 20s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-drift {
+    animation: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Camino de transformación: nodos que se iluminan al paso de la línea
+   --------------------------------------------------------------- */
+.tp-dot {
+  border-color: var(--color-dorado-tenue);
+  color: var(--color-texto-gris);
+  transition:
+    border-color 500ms ease-out,
+    color 500ms ease-out,
+    box-shadow 400ms ease-in-out,
+    transform 400ms ease-in-out;
+}
+.tp-node[data-active="true"] .tp-dot {
+  border-color: var(--color-dorado);
+  color: var(--color-dorado);
+  box-shadow: 0 0 0 6px var(--color-dorado-tenue);
+}
+.tp-text {
+  opacity: 0;
+  transform: translateY(16px);
+  transition:
+    opacity 600ms cubic-bezier(0.16, 1, 0.3, 1),
+    transform 600ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+.tp-node[data-active="true"] .tp-text {
+  opacity: 1;
+  transform: none;
+}
+/* Hover: nodo crece ligeramente + halo dorado sutil + texto destacado */
+.tp-node:hover .tp-dot {
+  transform: scale(1.08);
+  box-shadow: 0 0 0 8px var(--color-dorado-tenue);
+}
+.tp-node:hover .tp-text h3 {
+  color: var(--color-dorado);
+}
+.tp-text h3 {
+  transition: color 300ms ease-in-out;
+}
+@media (prefers-reduced-motion: reduce) {
+  .tp-text {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none;
+  }
+  .tp-dot {
+    transition: none;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Accordion FAQ: apertura suave con grid-template-rows
+   --------------------------------------------------------------- */
+.faq-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 400ms ease-in-out;
+}
+.faq-panel[data-open="true"] {
+  grid-template-rows: 1fr;
+}
+.faq-panel > div {
+  overflow: hidden;
+}
+@media (prefers-reduced-motion: reduce) {
+  .faq-panel {
+    transition: none;
+  }
+}

@@ -1,0 +1,92 @@
+import {
+  ArrowRightLeft,
+  Briefcase,
+  Building2,
+  CheckCircle2,
+  CircleCheckBig,
+  Compass,
+  Ear,
+  Flag,
+  Footprints,
+  Gem,
+  Handshake,
+  Heart,
+  Home,
+  Layers,
+  Leaf,
+  Lightbulb,
+  Lock,
+  MessageCircle,
+  MessageCircleHeart,
+  MessageCircleWarning,
+  MessagesSquare,
+  PenTool,
+  Presentation,
+  RefreshCw,
+  Scale,
+  Search,
+  Send,
+  Signpost,
+  Sprout,
+  Star,
+  Target,
+  TrendingUp,
+  User,
+  Users,
+  UsersRound,
+  type LucideIcon,
+} from "lucide-react";
+
+/** Mapa nombre → icono lucide, para poder referenciar iconos desde /content como strings */
+const iconMap: Record<string, LucideIcon> = {
+  ArrowRightLeft,
+  Briefcase,
+  Building2,
+  CheckCircle2,
+  CircleCheckBig,
+  Compass,
+  Ear,
+  Flag,
+  Footprints,
+  Gem,
+  Handshake,
+  Heart,
+  Home,
+  Layers,
+  Leaf,
+  Lightbulb,
+  Lock,
+  MessageCircle,
+  MessageCircleHeart,
+  MessageCircleWarning,
+  MessagesSquare,
+  PenTool,
+  Presentation,
+  RefreshCw,
+  Scale,
+  Search,
+  Send,
+  Signpost,
+  Sprout,
+  Star,
+  Target,
+  TrendingUp,
+  User,
+  Users,
+  UsersRound,
+};
+
+export function Icon({
+  name,
+  className,
+  strokeWidth = 1.5,
+  "aria-hidden": ariaHidden = true,
+}: {
+  name: string;
+  className?: string;
+  strokeWidth?: number;
+  "aria-hidden"?: boolean;
+}) {
+  const Cmp = iconMap[name] ?? MessageCircle;
+  return <Cmp className={className} strokeWidth={strokeWidth} aria-hidden={ariaHidden} />;
+}
