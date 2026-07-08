@@ -8,9 +8,9 @@ export const hero = {
     "Acompañamos a personas, familias y organizaciones a construir nuevas posibilidades, fortalecer sus relaciones y transformar la manera en que viven, se relacionan y lideran.",
   ctaPrincipal: { label: "Comencemos una conversación", href: "/agenda" },
   ctaSecundario: { label: "Descubre cómo podemos acompañarte", href: "#razones" },
-  imagen:
-    "https://images.unsplash.com/photo-1762943031946-610b418b7beb?auto=format&fit=crop&w=2400&q=80",
-  imagenAlt: "Puente de piedra sobre un río en calma bajo un cielo dorado al atardecer",
+  imagen: "/hero.png",
+  imagenAlt:
+    "Persona cruzando un puente de piedra sobre un río al atardecer, con el sol asomando bajo el arco",
 };
 
 export const identificacion = {
