@@ -10,6 +10,7 @@ import VideoLightbox from "@/components/VideoLightbox";
 import ReasonCard from "@/components/cards/ReasonCard";
 import PathCard from "@/components/cards/PathCard";
 import ResourceCard from "@/components/cards/ResourceCard";
+import DiscoverMomentEntry from "@/components/quiz/DiscoverMomentEntry";
 import { Icon } from "@/lib/icons";
 import {
   ctaFinal,
@@ -70,6 +71,9 @@ export default function HomePage() {
           </AnimateOnScroll>
         </div>
       </section>
+
+      {/* 3.5 Descubre tu momento actual — entrada al cuestionario */}
+      <DiscoverMomentEntry />
 
       {/* 4. ¿Qué es Ponte Veritas? — imagen + texto cruzados */}
       <section className="bg-blanco-calido py-24">

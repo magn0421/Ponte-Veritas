@@ -69,6 +69,15 @@ export const razones: Razon[] = [
   },
 ];
 
+export const descubreMomento = {
+  eyebrow: "Un espacio para ti",
+  titulo: "Descubre tu momento actual",
+  texto:
+    "Antes de elegir un camino, a veces ayuda comprender mejor el momento que atraviesas. Te invitamos a un breve espacio de reflexión personal: 12 preguntas para mirar tu presente con perspectiva y descubrir cómo podríamos acompañarte.",
+  nota: "Unos pocos minutos · No es una evaluación clínica · No necesitas dejar tus datos",
+  cta: { label: "Descubre tu momento actual", href: "/descubre-tu-momento" },
+};
+
 export const queEs = {
   titulo: "¿Qué es Ponte Veritas?",
   subtitulo:
