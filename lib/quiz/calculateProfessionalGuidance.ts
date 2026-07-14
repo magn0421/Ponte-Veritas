@@ -1,16 +1,12 @@
 import type { Answers } from "@/content/quiz/types";
+import { calculatePressureGuidance } from "./calculatePressureGuidance";
 
 /**
- * Regla de orientación profesional (spec §9).
- * true únicamente si P5 (pressureLevel) === ALMOST_EVERY_DAY y
- * P6 (copingResources) es INSUFFICIENT o NONE.
+ * Regla de orientación profesional (V2 §9). Se activa con
+ * MORE_THAN_HALF + (INSUFFICIENT|NONE) o ALMOST_EVERY_DAY + (PARTIAL|INSUFFICIENT|NONE).
+ * Delega en la matriz P5/P6 para mantener una única fuente de verdad.
  * No diagnostica, no detecta crisis ni determina necesidad de tratamiento.
  */
 export function calculateProfessionalGuidance(answers: Answers): boolean {
-  const pressureLevel = answers.P5;
-  const copingResources = answers.P6;
-  return (
-    pressureLevel === "ALMOST_EVERY_DAY" &&
-    (copingResources === "INSUFFICIENT" || copingResources === "NONE")
-  );
+  return calculatePressureGuidance(answers).showProfessionalGuidance;
 }

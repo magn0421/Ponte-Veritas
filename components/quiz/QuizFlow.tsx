@@ -3,17 +3,14 @@
 import { useEffect, useMemo } from "react";
 import { Loader2 } from "lucide-react";
 import { questions } from "@/content/quiz/questions";
-import {
-  interludes,
-  educationCapsule,
-  resultTransition,
-} from "@/content/quiz/cta";
+import { interludes, resultTransition } from "@/content/quiz/cta";
 import { buildFlow, TOTAL_QUESTIONS } from "@/lib/quiz/flow";
 import { computeResult } from "@/lib/quiz/computeResult";
 import { useQuizState } from "@/lib/quiz/useQuizState";
 import QuizWelcome from "./QuizWelcome";
 import QuizQuestion from "./QuizQuestion";
 import InterludeScreen from "./InterludeScreen";
+import CoachingEducation from "./CoachingEducation";
 import ResultView from "./ResultView";
 
 const questionById = new Map(questions.map((q) => [q.id, q]));
@@ -81,14 +78,7 @@ export default function QuizFlow() {
       );
 
     case "education":
-      return (
-        <InterludeScreen
-          eyebrow={educationCapsule.titulo}
-          text={interludes.education}
-          onNext={next}
-          onBack={back}
-        />
-      );
+      return <CoachingEducation onNext={next} onBack={back} />;
 
     case "transition":
       return (

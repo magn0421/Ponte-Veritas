@@ -4,6 +4,7 @@ import { calculateScores } from "./calculateScores";
 import { resolveTie } from "./resolveTie";
 import { calculateSecondaryProfile } from "./calculateSecondaryProfile";
 import { calculateProfessionalGuidance } from "./calculateProfessionalGuidance";
+import { calculatePressureGuidance } from "./calculatePressureGuidance";
 import { calculateDynamicCTA } from "./calculateDynamicCTA";
 import { computeResult } from "./computeResult";
 
@@ -154,5 +155,94 @@ describe("computeResult — recálculo y restauración", () => {
     const r = computeResult({ ...all("A"), P5: "ALMOST_EVERY_DAY", P6: "NONE" });
     expect(r.showProfessionalGuidance).toBe(true);
     expect(r.pressureLevel).toBe("ALMOST_EVERY_DAY");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// V2: matriz P5/P6, precedencia, recálculo y privacidad
+// ---------------------------------------------------------------------------
+
+type Flags = { pg: boolean; cpg: boolean; note: boolean };
+
+const f = (pg: boolean, cpg: boolean, note: boolean): Flags => ({ pg, cpg, note });
+
+function flagsOf(p5: string, p6: string): Flags {
+  const r = calculatePressureGuidance({ P5: p5, P6: p6 });
+  return {
+    pg: r.showProfessionalGuidance,
+    cpg: r.showCoachingPressureGuidance,
+    note: r.showPreventiveNote,
+  };
+}
+
+describe("V2 · matriz P5/P6 (calculatePressureGuidance)", () => {
+  const cases: Array<[string, string, string, Flags]> = [
+    ["1. NEVER + EFFECTIVE", "NEVER", "EFFECTIVE", f(false, false, false)],
+    ["1b. NEVER + NONE", "NEVER", "NONE", f(false, false, false)],
+    ["2. SOME_DAYS + EFFECTIVE", "SOME_DAYS", "EFFECTIVE", f(false, false, false)],
+    ["3. SOME_DAYS + PARTIAL", "SOME_DAYS", "PARTIAL", f(false, true, false)],
+    ["4. SOME_DAYS + INSUFFICIENT", "SOME_DAYS", "INSUFFICIENT", f(false, true, true)],
+    ["5. SOME_DAYS + NONE", "SOME_DAYS", "NONE", f(false, true, true)],
+    ["6. MORE_THAN_HALF + EFFECTIVE", "MORE_THAN_HALF", "EFFECTIVE", f(false, true, false)],
+    ["7. MORE_THAN_HALF + PARTIAL", "MORE_THAN_HALF", "PARTIAL", f(false, true, true)],
+    ["8. MORE_THAN_HALF + INSUFFICIENT", "MORE_THAN_HALF", "INSUFFICIENT", f(true, false, false)],
+    ["9. MORE_THAN_HALF + NONE", "MORE_THAN_HALF", "NONE", f(true, false, false)],
+    ["10. ALMOST_EVERY_DAY + EFFECTIVE", "ALMOST_EVERY_DAY", "EFFECTIVE", f(false, true, true)],
+    ["11. ALMOST_EVERY_DAY + PARTIAL", "ALMOST_EVERY_DAY", "PARTIAL", f(true, false, false)],
+    ["12. ALMOST_EVERY_DAY + INSUFFICIENT", "ALMOST_EVERY_DAY", "INSUFFICIENT", f(true, false, false)],
+    ["13. ALMOST_EVERY_DAY + NONE", "ALMOST_EVERY_DAY", "NONE", f(true, false, false)],
+  ];
+  it.each(cases)("%s", (_n, p5, p6, expected) => {
+    expect(flagsOf(p5, p6)).toEqual(expected);
+  });
+
+  it("sin P5 o sin P6 → ningún bloque", () => {
+    expect(flagsOf("ALMOST_EVERY_DAY", "")).toEqual(f(false, false, false));
+    expect(calculatePressureGuidance({})).toEqual({
+      showProfessionalGuidance: false,
+      showCoachingPressureGuidance: false,
+      showPreventiveNote: false,
+    });
+  });
+});
+
+describe("V2 · precedencia de ProfessionalGuidance", () => {
+  it("14. si PG es true, CPG y nota son false (todas las celdas PG)", () => {
+    const pgCells: Array<[string, string]> = [
+      ["MORE_THAN_HALF", "INSUFFICIENT"],
+      ["MORE_THAN_HALF", "NONE"],
+      ["ALMOST_EVERY_DAY", "PARTIAL"],
+      ["ALMOST_EVERY_DAY", "INSUFFICIENT"],
+      ["ALMOST_EVERY_DAY", "NONE"],
+    ];
+    for (const [p5, p6] of pgCells) {
+      const r = computeResult({ ...all("A"), P5: p5, P6: p6 });
+      expect(r.showProfessionalGuidance).toBe(true);
+      expect(r.showCoachingPressureGuidance).toBe(false);
+      expect(r.showPreventiveNote).toBe(false);
+    }
+  });
+});
+
+describe("V2 · recálculo y no alteración", () => {
+  it("15. cambiar P5/P6 recalcula las banderas", () => {
+    const base = all("A");
+    const before = computeResult({ ...base, P5: "SOME_DAYS", P6: "PARTIAL" });
+    expect(before.showCoachingPressureGuidance).toBe(true);
+    expect(before.showProfessionalGuidance).toBe(false);
+    const after = computeResult({ ...base, P5: "ALMOST_EVERY_DAY", P6: "NONE" });
+    expect(after.showProfessionalGuidance).toBe(true);
+    expect(after.showCoachingPressureGuidance).toBe(false);
+  });
+
+  it("16. variar P5/P6 no altera puntuación, perfiles ni CTA", () => {
+    const base = { ...all("C"), P12: "EXPLORE_SUPPORT" };
+    const a = computeResult({ ...base, P5: "NEVER", P6: "EFFECTIVE" });
+    const b = computeResult({ ...base, P5: "ALMOST_EVERY_DAY", P6: "NONE" });
+    expect(a.primaryProfile).toBe(b.primaryProfile);
+    expect(a.scores).toEqual(b.scores);
+    expect(a.secondaryProfile).toBe(b.secondaryProfile);
+    expect(a.dynamicCTA).toBe(b.dynamicCTA);
+    expect(a.dynamicCTA).toBe("EXPLORE_SUPPORT");
   });
 });

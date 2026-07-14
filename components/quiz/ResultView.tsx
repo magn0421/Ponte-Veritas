@@ -1,12 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, RotateCcw, Sparkles, Target, Lightbulb } from "lucide-react";
+import { ArrowRight, RotateCcw, Sparkles, Target, Lightbulb, LifeBuoy, Compass } from "lucide-react";
 import type { QuizResult } from "@/content/quiz/types";
 import { profileContent } from "@/content/quiz/profiles";
 import {
   ctaContent,
-  professionalGuidanceNotice,
+  professionalGuidance,
+  coachingPressureGuidance,
+  preventiveNote,
   scopeDeclaration,
   accompanimentHeading,
 } from "@/content/quiz/cta";
@@ -14,9 +16,11 @@ import LeadCapture from "./LeadCapture";
 
 /**
  * Página de resultados. Todo se deriva de `result` (función pura del estado).
- * No se muestran puntuaciones ni porcentajes. El orden sigue la spec §13:
- * hero → interpretación → fortaleza/oportunidad → ejercicio → captación opcional
- * → acompañamiento → aviso profesional (si aplica) → CTA dinámico.
+ * No se muestran puntuaciones ni porcentajes. Orden V2 (§10):
+ * hero → interpretación → fortaleza/oportunidad → ejercicio →
+ * [ProfessionalGuidance si aplica; si no, CoachingPressureGuidance + nota
+ * preventiva cuando correspondan] → cómo acompaña Ponte Veritas →
+ * captación opcional → CTA dinámico.
  */
 export default function ResultView({
   result,
@@ -98,8 +102,58 @@ export default function ResultView({
             </p>
           </div>
 
-          {/* Captación opcional */}
-          <LeadCapture result={result} />
+          {/* Guía P5/P6: ProfessionalGuidance tiene precedencia sobre CPG/nota */}
+          {result.showProfessionalGuidance ? (
+            <div
+              role="note"
+              className="rounded-(--radius-card) border border-dorado/50 bg-blanco-calido p-7 sm:p-9"
+            >
+              <div className="flex items-center gap-2 text-dorado">
+                <LifeBuoy className="h-5 w-5" aria-hidden="true" />
+                <span className="text-xs font-bold tracking-[0.15em] uppercase">
+                  {professionalGuidance.titulo}
+                </span>
+              </div>
+              <h2 className="mt-4 font-serif text-xl leading-snug text-texto-oscuro">
+                {professionalGuidance.subtitulo}
+              </h2>
+              <div className="mt-4 space-y-3">
+                {professionalGuidance.parrafos.map((p, i) => (
+                  <p key={i} className="text-sm leading-relaxed text-texto-oscuro">
+                    {p}
+                  </p>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <>
+              {result.showCoachingPressureGuidance && (
+                <div className="rounded-(--radius-card) border border-dorado-tenue bg-blanco-calido p-7 sm:p-9">
+                  <div className="flex items-center gap-2 text-dorado">
+                    <Compass className="h-5 w-5" aria-hidden="true" />
+                    <span className="text-xs font-bold tracking-[0.15em] uppercase">
+                      {coachingPressureGuidance.titulo}
+                    </span>
+                  </div>
+                  <div className="mt-4 space-y-3">
+                    {coachingPressureGuidance.parrafos.map((p, i) => (
+                      <p key={i} className="text-sm leading-relaxed text-texto-oscuro">
+                        {p}
+                      </p>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {result.showPreventiveNote && (
+                <p
+                  role="note"
+                  className="rounded-(--radius-card) border-l-2 border-dorado/50 bg-blanco-calido/60 px-5 py-4 text-sm leading-relaxed text-texto-gris"
+                >
+                  {preventiveNote}
+                </p>
+              )}
+            </>
+          )}
 
           {/* Cómo puede acompañar Ponte Veritas */}
           <div>
@@ -111,15 +165,8 @@ export default function ResultView({
             </p>
           </div>
 
-          {/* Aviso de orientación profesional (condicional, antes del CTA) */}
-          {result.showProfessionalGuidance && (
-            <div
-              role="note"
-              className="rounded-(--radius-card) border border-dorado/40 bg-blanco-calido p-6 text-sm leading-relaxed text-texto-oscuro"
-            >
-              {professionalGuidanceNotice}
-            </div>
-          )}
+          {/* Captación opcional */}
+          <LeadCapture result={result} />
 
           {/* CTA dinámico */}
           <div className="rounded-(--radius-card) bg-dorado-tenue p-7 text-center sm:p-9">

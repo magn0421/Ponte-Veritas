@@ -2,7 +2,7 @@ import type { Answers, CtaId, QuizResult } from "@/content/quiz/types";
 import { calculateScores } from "./calculateScores";
 import { resolveTie } from "./resolveTie";
 import { calculateSecondaryProfile } from "./calculateSecondaryProfile";
-import { calculateProfessionalGuidance } from "./calculateProfessionalGuidance";
+import { calculatePressureGuidance } from "./calculatePressureGuidance";
 import { calculateDynamicCTA } from "./calculateDynamicCTA";
 
 /**
@@ -18,6 +18,18 @@ export function computeResult(answers: Answers): QuizResult {
     primaryProfile
   );
 
+  // Banderas P5/P6 (V2). La matriz ya es mutuamente excluyente; el guard de
+  // precedencia lo deja explícito: si ProfessionalGuidance es true, las otras
+  // dos son false.
+  const pressure = calculatePressureGuidance(answers);
+  const showProfessionalGuidance = pressure.showProfessionalGuidance;
+  const showCoachingPressureGuidance = showProfessionalGuidance
+    ? false
+    : pressure.showCoachingPressureGuidance;
+  const showPreventiveNote = showProfessionalGuidance
+    ? false
+    : pressure.showPreventiveNote;
+
   return {
     scores,
     primaryProfile,
@@ -29,7 +41,9 @@ export function computeResult(answers: Answers): QuizResult {
     coachingUnderstanding: answers.P9 ?? null,
     readinessLevel: answers.P10 ?? null,
     nextStepIntent: (answers.P12 as CtaId | undefined) ?? null,
-    showProfessionalGuidance: calculateProfessionalGuidance(answers),
+    showProfessionalGuidance,
+    showCoachingPressureGuidance,
+    showPreventiveNote,
     dynamicCTA: calculateDynamicCTA(answers),
   };
 }

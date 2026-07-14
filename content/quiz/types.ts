@@ -71,6 +71,10 @@ export interface QuizResult {
   readinessLevel: string | null;
   nextStepIntent: CtaId | null;
   showProfessionalGuidance: boolean;
+  /** Bloque transversal V2: el coaching acompaña ante presión (no es perfil). */
+  showCoachingPressureGuidance: boolean;
+  /** Nota preventiva V2 (no es alerta, nivel de riesgo ni diagnóstico). */
+  showPreventiveNote: boolean;
   dynamicCTA: CtaId | null;
 }
 
