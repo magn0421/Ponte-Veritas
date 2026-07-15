@@ -70,12 +70,26 @@ export const razones: Razon[] = [
 ];
 
 export const descubreMomento = {
-  eyebrow: "Un espacio para ti",
-  titulo: "Descubre tu momento actual",
-  texto:
-    "Antes de elegir un camino, a veces ayuda comprender mejor el momento que atraviesas. Te invitamos a un breve espacio de reflexión personal: 12 preguntas para mirar tu presente con perspectiva y descubrir cómo podríamos acompañarte.",
-  nota: "Unos pocos minutos · No es una evaluación clínica · No necesitas dejar tus datos",
-  cta: { label: "Descubre tu momento actual", href: "/descubre-tu-momento" },
+  eyebrow: "Una pausa para mirar dónde estás",
+  // El título se compone en la vista: "momento" va resaltado en dorado.
+  tituloPre: "Descubre tu",
+  tituloResaltado: "momento",
+  tituloPost: "actual.",
+  parrafos: [
+    "Toda transformación comienza comprendiendo el momento que estás viviendo.",
+    "Este espacio de reflexión puede ayudarte a descubrir nuevas perspectivas y reconocer posibilidades que quizá hoy aún no ves.",
+    "También podrás descubrir cómo un proceso de coaching puede ayudarte a desarrollar nuevas perspectivas y herramientas para afrontar momentos de presión, cambios y desafíos personales o profesionales.",
+  ],
+  datos: [
+    { icono: "FileText", titulo: "12 preguntas", detalle: "Reflexiona sobre tu presente" },
+    { icono: "Clock", titulo: "2–3 minutos", detalle: "Un espacio breve para ti" },
+    { icono: "UserRound", titulo: "Resultado personalizado", detalle: "Una interpretación de tu momento actual" },
+  ],
+  cta: { label: "Comenzar mi conversación", href: "/descubre-tu-momento" },
+  fraseFinal:
+    "Cada proceso comienza con una conversación y una decisión de mirar el presente con una nueva perspectiva.",
+  aviso:
+    "Cuestionario informativo y de reflexión personal. No constituye una evaluación psicológica ni un diagnóstico.",
 };
 
 export const queEs = {
